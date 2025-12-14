@@ -1,0 +1,130 @@
+** Class D Audio Amplifier **
+*
+* Multisim Live SPICE netlist
+*
+*
+
+* --- Circuit Topology ---
+
+* Component: C1
+cC1 +12V 0 1e-7 
+
+* Component: C10
+cC10 6 0 6.8e-7 
+
+* Component: C11
+cC11 +12V 0 1e-7 
+
+* Component: C12
+cC12 10 9 0.001 
+
+* Component: C13
+cC13 10 0 6.8e-7 
+
+* Component: C14
+cC14 12 11 2.2e-7 
+
+* Component: C15
+cC15 +12V 0 0.001 
+
+* Component: C2
+cC2 C2_NC_1 1 0.000001 
+
+* Component: C3
+cC3 C3_NC_1 2 0.000001 
+
+* Component: C4
+cC4 3 0 0.000001 
+
+* Component: C5
+cC5 4 0 0.000001 
+
+* Component: C6
+cC6 +12V 0 1e-7 
+
+* Component: C7
+cC7 6 7 0.001 
+
+* Component: C8
+cC8 5 8 2.2e-7 
+
+* Component: C9
+cC9 +12V 0 0.00001 
+
+* Component: L1
+lL1 5 6 0.000033 
+
+* Component: L2
+lL2 11 10 0.000033 
+
+* Component: LS1
+xLS1 9 0 BUZZER_LS1 PARAMS: freq=200 voltage=9 current=0.05
+
+* Component: Speaker
+xSpeaker 7 0 BUZZER_Speaker PARAMS: freq=200 voltage=9 current=0.05
+
+* Component: TPA3122
+xTPA3122 +12V +12V 0 1 2 3 4 +12V 11 12 +12V +12V +12V +12V 8 5 LED_VIRTUAL_TPA3122
+
+
+* --- Subcircuits ---
+
+* LS1 subcircuit
+.subckt BUZZER_LS1 1 2 PARAMS: freq={200} voltage={9} current={0.05}
+V1 ispk 0 1 SIN(0 1 {freq} 0 0 0)
+B1 buzzing 0 V = { IF({V(1) - V(2)} >= {voltage}, 5, 0) }
+R1 1 2 {{voltage}/{current}}
+.ends
+
+* Speaker subcircuit
+.subckt BUZZER_Speaker 1 2 PARAMS: freq={200} voltage={9} current={0.05}
+V1 ispk 0 1 SIN(0 1 {freq} 0 0 0)
+B1 buzzing 0 V = { IF({V(1) - V(2)} >= {voltage}, 5, 0) }
+R1 1 2 {{voltage}/{current}}
+.ends
+
+* TPA3122 subcircuit
+.subckt LED_VIRTUAL_TPA3122 K1 K2 K3 K4 K5 K6 K7 K8 A8 A7 A6 A5 A4 A3 A2 A1
+
+dd1 A1 0vNode1 ledDiodeModel
+Vsense1 0vNode1 K1 DC 0
+* Interactive sense node
+b1 lit1 0 v = { if (i(Vsense1) < 0, 0, if( i(Vsense1) > 0.02, 1, { i(Vsense1) / 0.02 })) }
+
+dd2 A2 0vNode2 ledDiodeModel
+Vsense2 0vNode2 K2 DC 0
+* Interactive sense node
+b2 lit2 0 v = { if (i(Vsense2) < 0, 0, if( i(Vsense2) > 0.02, 1, { i(Vsense2) / 0.02 })) }
+
+dd3 A3 0vNode3 ledDiodeModel
+Vsense3 0vNode3 K3 DC 0
+* Interactive sense node
+b3 lit3 0 v = { if (i(Vsense3) < 0, 0, if( i(Vsense3) > 0.02, 1, { i(Vsense3) / 0.02 })) }
+
+dd4 A4 0vNode4 ledDiodeModel
+Vsense4 0vNode4 K4 DC 0
+* Interactive sense node
+b4 lit4 0 v = { if (i(Vsense4) < 0, 0, if( i(Vsense4) > 0.02, 1, { i(Vsense4) / 0.02 })) }
+
+dd5 A5 0vNode5 ledDiodeModel
+Vsense5 0vNode5 K5 DC 0
+* Interactive sense node
+b5 lit5 0 v = { if (i(Vsense5) < 0, 0, if( i(Vsense5) > 0.02, 1, { i(Vsense5) / 0.02 })) }
+
+dd6 A6 0vNode6 ledDiodeModel
+Vsense6 0vNode6 K6 DC 0
+* Interactive sense node
+b6 lit6 0 v = { if (i(Vsense6) < 0, 0, if( i(Vsense6) > 0.02, 1, { i(Vsense6) / 0.02 })) }
+
+dd7 A7 0vNode7 ledDiodeModel
+Vsense7 0vNode7 K7 DC 0
+* Interactive sense node
+b7 lit7 0 v = { if (i(Vsense7) < 0, 0, if( i(Vsense7) > 0.02, 1, { i(Vsense7) / 0.02 })) }
+
+dd8 A8 0vNode8 ledDiodeModel
+Vsense8 0vNode8 K8 DC 0
+* Interactive sense node
+b8 lit8 0 v = { if (i(Vsense8) < 0, 0, if( i(Vsense8) > 0.02, 1, { i(Vsense8) / 0.02 })) }
+
+.model ledDiodeModel D( IS=1e-14 N=1 RS=0 IBV=1e-10 BV=1e+30 CJO=0 M=0.5 VJ=1 )
+.ends
